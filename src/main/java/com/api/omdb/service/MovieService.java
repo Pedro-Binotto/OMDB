@@ -29,4 +29,9 @@ public class MovieService {
         Movie movie = movieConverter.convertToMovie(movieDTO);
                 return movieRepository.save(movie);
     }
+    public Movie getById(Long id){
+        return movieRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("Filme não encontrado"));
+    }
+
 }

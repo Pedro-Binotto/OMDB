@@ -15,6 +15,7 @@ public class MovieConverter {
     }
     public MovieVO convertToMovieVO(Movie movie){
         MovieVO movieVO = new MovieVO();
+        movieVO.setId(movie.getId());
         movieVO.setTitle(movie.getTitle());
         movieVO.setYear(movie.getYear());
         return movieVO;

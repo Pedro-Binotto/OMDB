@@ -8,7 +8,10 @@ import com.api.omdb.vo.MovieVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.rsa.crypto.RsaAlgorithm;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/movie")
@@ -30,11 +33,11 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     }
-    /*
+
     @PostMapping
     public ResponseEntity<MovieVO> saveMovie (@RequestBody MovieDTO movieDTO){
         try{
-            MovieVO movieVO = movieConverter.convertToMovieVO(movieService.save(movieDTO));
+            MovieVO movieVO = movieConverter.convertToMovieVO(movieService.save(movieDTO)); //MovieService.Save chama as informações de Movie, que passa para o controller como parametro para o converter, que por sua vez converte para MovieVO.
             addHateoas(movieVO);
             return ResponseEntity.status(HttpStatus.CREATED).body(movieVO);
         }catch (Exception e){
@@ -42,8 +45,22 @@ public class MovieController {
         }
     }
     private void addHateoas(MovieVO movieVO){
-        movieVO.add(linkTO(methodOn(MovieController.class).getById(movieVO.getId()))
+        movieVO.add(linkTo(methodOn(MovieController.class).getById(movieVO.getId()))
                 .withSelfRel());
-    }*/
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<MovieVO> getById(@PathVariable("id") Long id){
+        try{
+            MovieVO movieVO = movieConverter.convertToMovieVO(movieService.getById(id));
+            return ResponseEntity.ok(movieVO);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
+//requisições mandando MovieDTO recebem informações do MovieClient, pra retornar as informações para a tela, usa MovieVO (View Object)
+//Postman>MovieDTO>MovieVO
+//single responsability
